@@ -107,18 +107,26 @@ def db_init(db_filename, cleanup=True):
 
 def main():
     parser = OptionParser()
-    parser.add_option("--cleanup", dest="cleanup", action="store_true",
-                      help="Delete old data", default=True)
-    parser.add_option("-f", "--dbfile", dest="dbfile", action="store",
+    parser.add_option("-c", "--cleanup", dest="cleanup", action="store_true",
+                      help="Delete old data", default=False)
+    parser.add_option("-f", "--tweetfile", dest="tweetfile", action="store",
+                      help="tweets file",
+                      default='./three_minutes_tweets.json.txt')
+    parser.add_option("-d", "--dbfile", dest="dbfile", action="store",
                       help="Filename datafile", default="./tweets.db")
     parser.add_option("-v", "--verbose",
-                      action="store_false", dest="verbose",
-                      help="don't print status messages to stdout")
+                      action="store_true", dest="verbose", default=False,
+                      help="print status messages to stdout")
 
     (options, args) = parser.parse_args()
 
     print('Start loading tweets')
 
+    # locate tweetfile
+    tweetfile_abspath = os.path.abspath(options.tweetfile)
+    print('Source file: {}'.format(tweetfile_abspath))
+
+    # locate dbfile
     datafile_abspath = os.path.abspath(options.dbfile)
     print('Database file: {}'.format(datafile_abspath))
 
@@ -128,7 +136,7 @@ def main():
     line_count = 0
     processed_count = 0
 
-    with open('./three_minutes_tweets.json.txt', 'r') as f:
+    with open(tweetfile_abspath, 'r') as f:
         for line in f:
             line_count += 1
 
